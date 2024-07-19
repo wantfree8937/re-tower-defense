@@ -1,20 +1,29 @@
 import express from 'express';
 import { createServer } from 'http';
 import initSocket from './init/socket.js';
+import dotenv from 'dotenv';
+import UserRouter from './routes/user.router.js';
+
+dotenv.config();
 
 const app = express();
 const server = createServer(app);
 
-const PORT = 3000;
+const PORT = process.env.PORT_NUMBER;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-initSocket(server); // 소켓 추가
+app.use(express.static('tower_defense_client'));
+
+app.use('/api', [UserRouter]);
+initSocket(server);
 
 app.get('/', (req, res) => {
-  res.send('<h1>Hello World</h1>');
+  res.send('Hello World!');
 });
 
+loadGameAssets();
+
 server.listen(PORT, async () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`${PORT} Server가 열렸습니다`);
 });
