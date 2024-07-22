@@ -1,12 +1,14 @@
 import { CLIENT_VERSION } from '../constants.js';
 import { getUsers, removeUser } from '../models/user.model.js';
 import { clearMonsters } from '../models/monster.model.js';
+import { clearScore } from '../models/score.model.js';
 import handlerMappings from './handlerMapping.js';
-
+import { getGameAssets } from '../init/assets.js';
 
 export const handleDisconnect = (socket, uuid) => {
   removeUser(socket.id); // 사용자 삭제
   clearMonsters();
+  clearScore();
   console.log(`User disconnected: ${socket.id}`);
   console.log('Current users:', getUsers());
 };
@@ -15,7 +17,9 @@ export const handleConnection = (socket, userUUID) => {
   console.log(`New user connected: ${userUUID} with socket ID ${socket.id}`);
   console.log('Current users:', getUsers());
 
-  socket.emit('connection', { uuid: userUUID });
+  const initdata = getGameAssets().initData.data;
+
+  socket.emit('connection', { uuid: userUUID, initdata });
 };
 
 export const handleEvent = (io, socket, userUUID, data) => {
@@ -38,5 +42,6 @@ export const handleEvent = (io, socket, userUUID, data) => {
     //   return;
     // }
     // 해당 유저에게 적절한 response를 전달합니다.
+
     socket.emit('response', response);
   };
