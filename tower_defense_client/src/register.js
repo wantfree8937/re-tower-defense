@@ -25,11 +25,11 @@ document.getElementById('register').addEventListener('click', async () => {
       window.location.href = 'index.html';
     } else {
       const error = await response.json();
-      console.error('회원가입 실패!', error.message);
-      alert('회원가입 실패!' + error.message);
+      console.error('회원가입 실패: ', error.message);
+      alert('회원가입 실패: ' + error.message);
     }
   } catch (error) {
-    console.error('오?류 발생 :', error);
+    console.error('회원 가입 중 오류 발생 :', error);
     alert('회원가입 중 오류가 발생했습니다!');
   }
 });

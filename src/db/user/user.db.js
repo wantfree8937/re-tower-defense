@@ -3,7 +3,6 @@ import pools from '../database.js';
 import { SQL_QUERIES } from './user.queries.js';
 
 export const getUser = async (username) => {
-  console.log('이건 풀이여@@@@@@@@@@@@@@@@@@@@@@', pools.USER_DB, '이상 풀이었소@@@@@@@@@@@@@@');
   const [users] = await pools.USER_DB.query(SQL_QUERIES.FIND_USER_BY_USERNAME, [username]);
   return toCamelCase(users[0]);
 };
