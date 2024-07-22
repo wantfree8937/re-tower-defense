@@ -225,7 +225,8 @@ function gameLoop() {
       sendEvent(12, {
         index: i,
         monsterLevel,
-        monsters
+        monsters,
+        score
       })
     }
   }
@@ -269,6 +270,9 @@ Promise.all([
   let userId = null;
   serverSocket.on('response', (data) => {
     console.log(data);
+    if(data.score){
+      score = data.score;
+    }
   });
 
   serverSocket.on('connection', (data) => {
