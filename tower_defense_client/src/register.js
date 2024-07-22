@@ -10,7 +10,7 @@ document.getElementById('register').addEventListener('click', async () => {
     return;
   }
   try {
-    const response = await fetch('/sign-up', {
+    const response = await fetch('http://localhost:3000/api/sign-up', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
