@@ -7,6 +7,6 @@
     "towerCost": 500,
     "numOfInitialTowers": 3,
     "monsterLevel": 0,
-    "monsterSpawnInterval": 1500
+    "monsterSpawnInterval": 1200
   }
 }
