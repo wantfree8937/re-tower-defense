@@ -2,6 +2,7 @@ import { getUsers } from '../models/user.model.js';
 import { addMonster, getMonsters, removeMonster } from '../models/monster.model.js';
 import { addScore, getScore } from '../models/score.model.js';
 
+
 export const monsterCreateHandler = (uuid, payload) => {
   const monster = payload.monsters[payload.monsters.length - 1];
   addMonster(monster);
