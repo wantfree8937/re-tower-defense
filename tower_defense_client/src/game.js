@@ -19,7 +19,7 @@ let baseHp = 0; // 기지 체력
 let towerCost = 0; // 타워 구입 비용
 let numOfInitialTowers = 0; // 초기 타워 개수
 let monsterLevel = 0; // 몬스터 레벨
-let monsterSpawnInterval = 0; // 몬스터 생성 주기
+let monsterSpawnInterval = 3000; // 몬스터 생성 주기
 const monsters = [];
 const towers = [];
 
@@ -171,6 +171,10 @@ function placeBase() {
 
 function spawnMonster() {
   monsters.push(new Monster(monsterPath, monsterImages, monsterLevel));
+  sendEvent(11, {
+    monsterLevel,
+    monsters
+  })
 }
 
 function gameLoop() {
@@ -218,6 +222,11 @@ function gameLoop() {
     } else {
       /* 몬스터가 죽었을 때 */
       monsters.splice(i, 1);
+      sendEvent(12, {
+        index: i,
+        monsterLevel,
+        monsters
+      })
     }
   }
 
@@ -281,8 +290,7 @@ Promise.all([
 });
 
 const sendEvent = (handlerId, payload) => {
-  socket.emit('event', {
-    userId,
+  serverSocket.emit('event', {
     clientVersion: CLIENT_VERSION,
     handlerId,
     payload,
