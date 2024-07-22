@@ -1,3 +1,5 @@
+const colors = ["skyblue", "yellow", "orange", "red", "white"];
+
 export class Tower {
   constructor(x, y, cost) {
     // 생성자 안에서 타워들의 속성을 정의한다고 생각하시면 됩니다!
@@ -11,6 +13,7 @@ export class Tower {
     this.cooldown = 0; // 타워 공격 쿨타임
     this.beamDuration = 0; // 타워 광선 지속 시간
     this.target = null; // 타워 광선의 목표
+    this.upgraded = 0;
   }
 
   draw(ctx, towerImage) {
@@ -22,7 +25,7 @@ export class Tower {
         this.target.x + this.target.width / 2,
         this.target.y + this.target.height / 2
       );
-      ctx.strokeStyle = "skyblue";
+      ctx.strokeStyle = colors[this.upgraded];
       ctx.lineWidth = 10;
       ctx.stroke();
       ctx.closePath();
@@ -43,6 +46,21 @@ export class Tower {
   updateCooldown() {
     if (this.cooldown > 0) {
       this.cooldown--;
+    }
+  }
+
+  upgrade(userGold) {
+    if(this.upgraded == 4) {
+      console.log("업그레이드 최대치 도달");
+      return false;
+    }
+    // 타워를 업그레이드하는 메소드
+    if (this.cost <= userGold) {
+      this.attackPower += 20;   // 공격력 20 증가
+      this.range += 50;   // 사거리 50 증가
+      this.cooldown -= 100;  // 쿨다운 50 감소
+      this.upgraded += 1;   // 업그레이드 수치 증가
+      return true;
     }
   }
 }

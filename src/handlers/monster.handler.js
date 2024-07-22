@@ -6,7 +6,7 @@ export const monsterCreateHandler = (uuid, payload) => {
   addMonster(monster);
 
   const monsters = getMonsters();
-  console.log(monsters.length);
+  //console.log(monsters.length);
 
   const userId = getUsers();
 
