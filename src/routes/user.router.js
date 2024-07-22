@@ -1,6 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { addUser, getUser } from '../models/user.model.js';
+import { createUser, getUser, getUsers } from '../db/user/user.db.js';
 
 dotenv.config();
 
@@ -31,7 +31,7 @@ router.post('/sign-up', async (req, res, next) => {
     }
 
     // 유저 생성
-    const newUser = await addUser(username, password);
+    const newUser = await createUser(username, password);
 
     return res.status(200).json({ message: '회원가입이 완료되었습니다!', user: newUser });
   } catch (error) {
