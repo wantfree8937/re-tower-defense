@@ -9,6 +9,7 @@ const handlerMappings = {
   12: monsterKillHandler,
   15: createTower,
   16: upgradeTower,
+
 };
 
 export default handlerMappings;

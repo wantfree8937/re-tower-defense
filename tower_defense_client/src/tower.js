@@ -57,7 +57,7 @@ export class Tower {
     // 타워를 업그레이드하는 메소드
     if (this.cost <= userGold) {
       this.attackPower += 20;   // 공격력 20 증가
-      this.range += 50;   // 사거리 50 증가
+      this.range += 50;     // 사거리 50 증가
       this.cooldown -= 100;  // 쿨다운 50 감소
       this.upgraded += 1;   // 업그레이드 수치 증가
       return true;

@@ -27,7 +27,7 @@ let score = 0;      // 게임 점수
 let highScore = 0;  // 기존 최고 점수
 let isInitGame = false;
 
-let isRefund = false;    // 업그레이드 상태
+let isRefund = false;     // 업그레이드 상태
 let isUpgrade = false;    // 업그레이드 상태
 const upgradeCost = 500;  // 업그레이드 비용
 
