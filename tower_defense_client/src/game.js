@@ -6,26 +6,30 @@ import { CLIENT_VERSION } from './Constants.js';
   어딘가에 엑세스 토큰이 저장이 안되어 있다면 로그인을 유도하는 코드를 여기에 추가해주세요!
 */
 
-let serverSocket; // 서버 웹소켓 객체
+let serverSocket;   // 서버 웹소켓 객체
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-const NUM_OF_MONSTERS = 5; // 몬스터 개수
+const NUM_OF_MONSTERS = 5;    // 몬스터 개수
 
-let userGold = 0; // 유저 골드
-let base; // 기지 객체
-let baseHp = 0; // 기지 체력
+let userGold = 3000;    // 유저 골드
+let base;   // 기지 객체
+let baseHp = 100;   // 기지 체력
 
-let towerCost = 0; // 타워 구입 비용
-let numOfInitialTowers = 0; // 초기 타워 개수
-let monsterLevel = 0; // 몬스터 레벨
-let monsterSpawnInterval = 3000; // 몬스터 생성 주기
+let towerCost = 500;    // 타워 구입 비용
+let numOfInitialTowers = 3;   // 초기 타워 개수
+let monsterLevel = 0;   // 몬스터 레벨
+let monsterSpawnInterval = 1200;  // 몬스터 생성 주기
 const monsters = [];
 const towers = [];
 
-let score = 0; // 게임 점수
-let highScore = 0; // 기존 최고 점수
+let score = 0;      // 게임 점수
+let highScore = 0;  // 기존 최고 점수
 let isInitGame = false;
+
+let isRefund = false;     // 업그레이드 상태
+let isUpgrade = false;    // 업그레이드 상태
+const upgradeCost = 500;  // 업그레이드 비용
 
 // 이미지 로딩 파트
 const backgroundImage = new Image();
@@ -56,11 +60,11 @@ function generateRandomMonsterPath() {
 
   path.push({ x: currentX, y: currentY });
 
-  while (currentX < canvas.width) {
+  while (currentX < canvas.width-100) {
     currentX += Math.floor(Math.random() * 100) + 50; // 50 ~ 150 범위의 x 증가
     // x 좌표에 대한 clamp 처리
-    if (currentX > canvas.width) {
-      currentX = canvas.width;
+    if (currentX > canvas.width-100) {
+      currentX = canvas.width-50;
     }
 
     currentY += Math.floor(Math.random() * 200) - 100; // -100 ~ 100 범위의 y 변경
@@ -144,6 +148,8 @@ function placeInitialTowers() {
     타워를 초기에 배치하는 함수입니다.
     무언가 빠진 코드가 있는 것 같지 않나요? 
   */
+  
+
   for (let i = 0; i < numOfInitialTowers; i++) {
     const { x, y } = getRandomPositionNearPath(200);
     const tower = new Tower(x, y, towerCost);
@@ -153,15 +159,66 @@ function placeInitialTowers() {
 }
 
 function placeNewTower() {
-  /* 
-    타워를 구입할 수 있는 자원이 있을 때 타워 구입 후 랜덤 배치하면 됩니다.
-    빠진 코드들을 채워넣어주세요! 
-  */
-  const { x, y } = getRandomPositionNearPath(200);
-  const tower = new Tower(x, y);
-  towers.push(tower);
-  tower.draw(ctx, towerImage);
+  if (userGold < towerCost) {
+    console.log('골드가 부족합니다!');
+  } else {
+    userGold -= towerCost;
+    const { x, y } = getRandomPositionNearPath(200);
+    const tower = new Tower(x, y);
+    towers.push(tower);
+    tower.draw(ctx, towerImage);
+    
+    // 서버에 새 타워를 등록하는 과정 필요!
+  }
 }
+
+// 타워 판매
+function refundTower() {
+  if(!isRefund) { isRefund = true; }
+  else { isRefund = false; }
+}
+
+// 타워 업그레이드
+function upgradeTower() {
+  if(!isUpgrade) { isUpgrade = true; }
+  else { isUpgrade = false; }
+}
+
+//타워 클릭 이벤트
+canvas.addEventListener('click', (event) => {
+  const rect = canvas.getBoundingClientRect();
+  const clickX = event.clientX - rect.left;
+  const clickY = event.clientY - rect.top;
+  const towerRangeX = 30;
+  const towerRangeY = 30;
+
+  for (let i = 0; i < towers.length; i++) {
+    const tower = towers[i];
+
+    const towerCenterX = tower.x + tower.width / 2;
+    const towerCenterY = tower.y + tower.height / 2;
+
+    const deltaX = Math.abs(towerCenterX - clickX);
+    const deltaY = Math.abs(towerCenterY - clickY);
+
+    if (deltaX <= towerRangeX && deltaY <= towerRangeY && isRefund) {
+      sendEvent(17, {towerId : tower.towerId, towerpos: {x : tower.x , y : tower.y}});
+      towers.splice(i, 1);
+    }
+
+    else if(deltaX <= towerRangeX && deltaY <= towerRangeY && isUpgrade) {
+      if (userGold < upgradeCost) {
+        console.log('골드가 부족합니다!');
+      } else {
+        sendEvent(16, {towerIndex: i}); // 타워 존재 검증
+        const res = towers[i].upgrade(userGold);  // 업그레이드 가능여부 확인 후 강화
+        if(res) { userGold -= upgradeCost; }   // 업그레이드 비용만큼 골드 감소
+        else { console.log('업그레이드 실패'); }
+        
+      }
+    }
+  }
+});
 
 function placeBase() {
   const lastPoint = monsterPath[monsterPath.length - 1];
@@ -192,6 +249,11 @@ function gameLoop() {
   ctx.fillStyle = 'black';
   ctx.fillText(`현재 레벨: ${monsterLevel}`, 100, 200); // 최고 기록 표시
 
+  if(isUpgrade){
+    ctx.fillStyle = 'black';
+    ctx.fillText(`타워 강화 모드 ON`, 800, 150);
+  }
+
   // 타워 그리기 및 몬스터 공격 처리
   towers.forEach((tower) => {
     tower.draw(ctx, towerImage);
@@ -214,6 +276,7 @@ function gameLoop() {
     if (monster.hp > 0) {
       const isDestroyed = monster.move(base);
       if (isDestroyed) {
+        base.draw(ctx, baseImage);
         /* 게임 오버 */
         alert('게임 오버. 스파르타 본부를 지키지 못했다...ㅠㅠ');
         location.reload();
@@ -311,13 +374,24 @@ const buyTowerButton = document.createElement('button');
 buyTowerButton.textContent = '타워 구입';
 buyTowerButton.style.position = 'absolute';
 buyTowerButton.style.top = '10px';
-buyTowerButton.style.right = '10px';
+buyTowerButton.style.right = '180px';
 buyTowerButton.style.padding = '10px 20px';
 buyTowerButton.style.fontSize = '16px';
 buyTowerButton.style.cursor = 'pointer';
 
 buyTowerButton.addEventListener('click', placeNewTower);
-
 document.body.appendChild(buyTowerButton);
+
+const upgradeTowerButton = document.createElement('button');
+upgradeTowerButton.textContent = '타워 업그레이드';
+upgradeTowerButton.style.position = 'absolute';
+upgradeTowerButton.style.top = '10px';
+upgradeTowerButton.style.right = '10px';
+upgradeTowerButton.style.padding = '10px 20px';
+upgradeTowerButton.style.fontSize = '16px';
+upgradeTowerButton.style.cursor = 'pointer';
+
+upgradeTowerButton.addEventListener('click', upgradeTower);
+document.body.appendChild(upgradeTowerButton);
 
 export { sendEvent };
