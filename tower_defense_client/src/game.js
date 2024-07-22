@@ -230,8 +230,8 @@ function spawnMonster() {
   monsters.push(new Monster(monsterPath, monsterImages, monsterLevel));
   sendEvent(11, {
     monsterLevel,
-    monsters
-  })
+    monsters,
+  });
 }
 
 function gameLoop() {
@@ -288,8 +288,9 @@ function gameLoop() {
       sendEvent(12, {
         index: i,
         monsterLevel,
-        monsters
-      })
+        monsters,
+        score,
+      });
     }
   }
 
@@ -332,11 +333,20 @@ Promise.all([
   let userId = null;
   serverSocket.on('response', (data) => {
     console.log(data);
+    if (data.score) {
+      score = data.score;
+    }
   });
 
   serverSocket.on('connection', (data) => {
     console.log('connection: ', data);
     userId = data.uuid;
+    userGold = data.initdata.userGold;
+    baseHp = data.initdata.baseHp;
+    towerCost = data.initdata.towerCost;
+    numOfInitialTowers = data.initdata.numOfInitialTowers;
+    monsterLevel = data.initdata.monsterLevel;
+    monsterSpawnInterval = data.initdata.monsterSpawnInterval;
     if (!isInitGame) {
       initGame();
     }
