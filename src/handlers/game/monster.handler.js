@@ -1,7 +1,6 @@
-import { getUsers } from '../models/user.model.js';
-import { addMonster, getMonsters, removeMonster } from '../models/monster.model.js';
-import { addScore, getScore } from '../models/score.model.js';
-
+import { getUsers, getGold, addGold } from '../../models/user.model.js';
+import { addMonster, getMonsters, removeMonster } from '../../models/monster.model.js';
+import { addScore, getScore } from '../../models/score.model.js';
 
 export const monsterCreateHandler = (uuid, payload) => {
   const monster = payload.monsters[payload.monsters.length - 1];
@@ -28,23 +27,35 @@ export const monsterCreateHandler = (uuid, payload) => {
 export const monsterKillHandler = (uuid, payload) => {
   removeMonster(payload.index);
 
-  const point = 100;
   const monsters = getMonsters();
-  let score = getScore();
 
   if (monsters.length !== payload.monsters.length) {
     return { status: 'fail', message: '서버와 몬스터 데이터가 다릅니다.' };
   }
 
-  if (score !== payload.score) {
+  if (getScore() !== payload.score) {
     return { status: 'fail', message: '서버의 점수와 다릅니다.' };
   }
 
-  addScore(point);
+  addScore(100); // 몬스터 처치 시 스코어 100씩 증가
+
+  if (getScore() % 1000 === 0) {
+    addGold(500); // 스코어가 1000 단위가 될 때마다 500골드 추가
+    return {
+      status: 'success',
+      message: '몬스터를 처치했습니다. 골드를 획득합니다.',
+      syncData: {
+        score: getScore(),
+        userGold: getGold(),
+      },
+    };
+  }
 
   return {
     status: 'success',
     message: '몬스터를 처치했습니다.',
-    score: getScore(),
+    syncData: {
+      score: getScore(),
+    },
   };
 };

@@ -1,6 +1,6 @@
-import { gameEnd, gameStart } from './game.handler.js';
-import { monsterCreateHandler, monsterKillHandler } from './monster.handler.js'
-import { createTower, upgradeTower, attackTower } from './tower.handler.js'
+import { gameEnd, gameStart } from './game/game.handler.js';
+import { monsterCreateHandler, monsterKillHandler } from './game/monster.handler.js'
+import { createTower, upgradeTower } from './game/tower.handler.js'
 
 const handlerMappings = {
   2: gameStart,

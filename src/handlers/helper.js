@@ -1,5 +1,5 @@
 import { CLIENT_VERSION } from '../constants.js';
-import { getUsers, removeUser } from '../models/user.model.js';
+import { getUsers, removeUser, clearGold, addGold } from '../models/user.model.js';
 import { clearMonsters } from '../models/monster.model.js';
 import { clearScore } from '../models/score.model.js';
 import handlerMappings from './handlerMapping.js';
@@ -9,6 +9,7 @@ export const handleDisconnect = (socket, uuid) => {
   removeUser(socket.id); // 사용자 삭제
   clearMonsters();
   clearScore();
+  clearGold();
   console.log(`User disconnected: ${socket.id}`);
   console.log('Current users:', getUsers());
 };
@@ -18,6 +19,7 @@ export const handleConnection = (socket, userUUID) => {
   console.log('Current users:', getUsers());
 
   const initdata = getGameAssets().initData.data;
+  addGold(initdata.userGold);
 
   socket.emit('connection', { uuid: userUUID, initdata });
 };
