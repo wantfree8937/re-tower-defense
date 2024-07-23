@@ -1,6 +1,6 @@
-import { getUsers } from '../models/user.model.js';
-import { addMonster, getMonsters, removeMonster } from '../models/monster.model.js';
-import { addScore, getScore } from '../models/score.model.js';
+import { getUsers } from '../../models/user.model.js';
+import { addMonster, getMonsters, removeMonster } from '../../models/monster.model.js';
+import { addScore, getScore } from '../../models/score.model.js';
 
 
 export const monsterCreateHandler = (uuid, payload) => {
@@ -45,6 +45,8 @@ export const monsterKillHandler = (uuid, payload) => {
   return {
     status: 'success',
     message: '몬스터를 처치했습니다.',
-    score: getScore(),
+    syncData: {
+      score: getScore(),
+    }
   };
 };
