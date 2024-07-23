@@ -1,4 +1,5 @@
 const users = [];
+let gold = 0;
 
 export const addUser = (user) => {
   users.push(user);
@@ -13,4 +14,16 @@ export const removeUser = (socketId) => {
 
 export const getUsers = () => {
   return users;
+};
+
+export const getGold = () => {
+  return gold;
+};
+
+export const addGold = (num) => {
+  return gold += num;
+};
+
+export const clearGold = () => {
+  gold = 0;
 };
