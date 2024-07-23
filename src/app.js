@@ -19,6 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/api', [router]);
 app.use(express.static('tower_defense_client'));
 
+testAllConnections(pools);
 initSocket(server);
 
 app.get('/', (req, res) => {
