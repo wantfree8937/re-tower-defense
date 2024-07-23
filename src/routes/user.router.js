@@ -60,7 +60,8 @@ router.post('/sign-in', async (req, res) => {
 
     const token = jwt.sign(
       {
-        userId: user.userId,
+        username: username,
+        password: password,
       },
       process.env.TOKEN_SECRET_KEY, // 비밀 키가 설정되어 있는지 확인
       { expiresIn: '1h' }, // 옵션 추가: 토큰 만료 시간 설정
