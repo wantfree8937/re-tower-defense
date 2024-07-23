@@ -1,5 +1,5 @@
 import { CLIENT_VERSION } from '../constants.js';
-import { getUsers, removeUser, clearGold, addGold } from '../models/user.model.js';
+import { getUsers, removeUser, clearGold, setGold } from '../models/user.model.js';
 import { clearMonsters } from '../models/monster.model.js';
 import { clearScore } from '../models/score.model.js';
 import handlerMappings from './handlerMapping.js';
@@ -19,7 +19,7 @@ export const handleConnection = (socket, userUUID) => {
   console.log('Current users:', getUsers());
 
   const initdata = getGameAssets().initData.data;
-  addGold(initdata.userGold);
+  setGold(initdata.userGold);
 
   socket.emit('connection', { uuid: userUUID, initdata });
 };
