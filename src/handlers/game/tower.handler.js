@@ -1,5 +1,5 @@
-import { getUsers } from '../models/user.model.js';
-import { addTower, removeTower, getTowers, updateTower } from '../models/tower.model.js';
+import { getUsers } from '../../models/user.model.js';
+import { addTower, removeTower, getTowers, updateTower } from '../../models/tower.model.js';
 
 export const createTower = (uuid, payload) => {
   const tower = payload.towers[payload.towers.length - 1];

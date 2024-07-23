@@ -297,6 +297,13 @@ function gameLoop() {
   requestAnimationFrame(gameLoop); // 지속적으로 다음 프레임에 gameLoop 함수 호출할 수 있도록 함
 }
 
+function dataSync(data) {
+  userGold = data.userGold !== undefined ? data.userGold : userGold;
+  baseHp = data.baseHp !== undefined ? data.baseHp : baseHp;
+  monsterLevel = data.monsterLevel !== undefined ? data.monsterLevel : monsterLevel;
+  score = data.score !== undefined ? data.score : score;
+}
+
 function initGame() {
   if (isInitGame) {
     return;
@@ -333,8 +340,8 @@ Promise.all([
   let userId = null;
   serverSocket.on('response', (data) => {
     console.log(data);
-    if (data.score) {
-      score = data.score;
+    if (data.syncData) { // response에 syncData가 포함되어 있으면 데이터 동기화 함수 실행
+      dataSync(data.syncData);
     }
   });
 
