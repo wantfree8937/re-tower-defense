@@ -5,8 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon src/app.js",
-    "migrate": "node src/db/migrations/createSchemas.js"
+    "dev": "nodemon src/app.js"
   },
   "keywords": [],
   "author": "",
