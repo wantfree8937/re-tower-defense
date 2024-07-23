@@ -36,8 +36,14 @@ export const upgradeTower = (uuid, payload) => {
     return { status: 'fail', message: '서버에 존재하지 않는 대상입니다.' };
   }
 
+  
+
   return {
     status: 'success',
     message: '대상 확인, 타워를 업그레이드했습니다.',
   };
+};
+
+export const attackTower = (uuid, payload) => {
+
 };

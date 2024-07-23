@@ -35,7 +35,7 @@ export const handleEvent = (io, socket, userUUID, data) => {
     }
   
     // 적절한 핸들러에 userID 와 payload를 전달하고 결과를 받습니다.
-    const response = handler(userUUID, data.payload);
+    const response = handler(userUUID, data.payload);   // monsterCreateHandler(userUUID, data.payload);
     // 만약 결과에 broadcast (모든 유저에게 전달)이 있다면 broadcast 합니다.
     // if (response.broadcast) {
     //   io.emit('response', 'broadcast');
