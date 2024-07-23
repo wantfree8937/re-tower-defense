@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "migrate": "node src/db/migrations/createSchemas.js",
     "dev": "nodemon src/app.js"
   },
   "keywords": [],
