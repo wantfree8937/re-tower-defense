@@ -31,7 +31,6 @@ server.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
 
   try {
-    testAllConnections(pools);
     const assets = await loadGameAssets();
     //console.log(assets);
     console.log('Assets loaded successfully');
