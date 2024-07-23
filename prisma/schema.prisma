@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  user_id    Int     @id @default(autoincrement()) @map("userId")
+  username   String @map("username")
+  password   String @map("password")
+  uuid String? @map("uuid")
+  createdAt DateTime @default(now()) @map("createdAt")
+  updatedAt DateTime @updatedAt @map("updatedAt")
+
+  scores Score[]
+  @@map("users")
+}
+
+model Score {
+  rank_id    Int    @id @default(autoincrement())
+  high_score Int
+  user_id    Int
+  user       user   @relation(fields: [user_id], references: [user_id])
+
+  @@index([user_id])
+  @@map("scores")
+  }
