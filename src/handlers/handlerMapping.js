@@ -1,5 +1,9 @@
 import { gameEnd, gameStart } from './game/game.handler.js';
-import { monsterCreateHandler, monsterKillHandler } from './game/monster.handler.js';
+import {
+  monsterCreateHandler,
+  monsterKillHandler,
+  baseUnderAttack,
+} from './game/monster.handler.js';
 import { saveTowerInfoHandler, upgradeTower, refundTower } from './game/tower.handler.js';
 
 const handlerMappings = {
@@ -10,6 +14,7 @@ const handlerMappings = {
   16: upgradeTower,
   17: refundTower,
   21: saveTowerInfoHandler,
+  50: baseUnderAttack,
 };
 
 export default handlerMappings;

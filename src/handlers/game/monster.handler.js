@@ -24,7 +24,7 @@ export const monsterCreateHandler = (userId, payload) => {
   };
 };
 
-export const monsterKillHandler = (uuid, payload) => {
+export const monsterKillHandler = (userId, payload) => {
   removeMonster(payload.index);
 
   const monsters = getMonsters();
@@ -62,4 +62,8 @@ export const monsterKillHandler = (uuid, payload) => {
       score,
     },
   };
+};
+
+export const baseUnderAttack = (userId, payload) => {
+  payload.towerHp;
 };

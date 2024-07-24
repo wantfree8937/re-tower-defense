@@ -8,7 +8,7 @@ import {
 } from '../../models/tower.model.js';
 
 // 타워 정보 저장
-export const saveTowerInfoHandler = (uuid, payload) => {
+export const saveTowerInfoHandler = (userId, payload) => {
   // userId 검증
   // const userId = getUsers();
   // userId.forEach(element => {
@@ -18,7 +18,7 @@ export const saveTowerInfoHandler = (uuid, payload) => {
   // })
 
   const towerData = {
-    uuid,
+    userId,
     towerX: payload.x,
     towerY: payload.y,
     // towerLevel: payload.towerLevel,
@@ -28,21 +28,21 @@ export const saveTowerInfoHandler = (uuid, payload) => {
   console.log('server TowerList:', getTowers());
 
   console.log(
-    `SERVER측 타워 정보 저장 - uuid: ${towerData.uuid}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
+    `SERVER측 타워 정보 저장 - userId: ${towerData.userId}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
   );
   return {
     status: 'success',
-    message: `SERVER측 타워 정보 저장 - uuid: ${towerData.uuid}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
+    message: `SERVER측 타워 정보 저장 - userId: ${towerData.userId}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
   };
 };
 
-export const upgradeTower = (uuid, payload) => {
+export const upgradeTower = (userId, payload) => {
   const towers = getTowers();
   console.log('towers:', towers);
   const { towerIndex } = payload;
   //console.log('towerIndex:',towerIndex);
 
-  const userId = getUsers();
+  const user = getUsers();
 
   const goldNow = getGold();
   const Cost = upgradeCost;
@@ -65,11 +65,11 @@ export const upgradeTower = (uuid, payload) => {
   };
 };
 
-export const refundTower = (uuid, payload) => {
+export const refundTower = (userId, payload) => {
   const towers = getTowers();
   const { towerIndex } = payload;
 
-  const userId = getUsers();
+  const user = getUsers();
 
   const goldNow = getGold();
   const Cost = towerCost;
