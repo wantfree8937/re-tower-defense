@@ -1,4 +1,4 @@
-import { getUsers, getGold, addGold } from '../../models/user.model.js';
+import { getUsers, getGold, setGold } from '../../models/user.model.js';
 import { addMonster, getMonsters, removeMonster } from '../../models/monster.model.js';
 import { addScore, getScore } from '../../models/score.model.js';
 
@@ -40,7 +40,8 @@ export const monsterKillHandler = (uuid, payload) => {
   addScore(100); // 몬스터 처치 시 스코어 100씩 증가
 
   if (getScore() % 1000 === 0) {
-    addGold(500); // 스코어가 1000 단위가 될 때마다 500골드 추가
+    const goldNow = getGold();
+    setGold(goldNow+500); // 스코어가 1000 단위가 될 때마다 500골드 추가
     return {
       status: 'success',
       message: '몬스터를 처치했습니다. 골드를 획득합니다.',

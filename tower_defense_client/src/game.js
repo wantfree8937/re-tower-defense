@@ -145,20 +145,14 @@ function getRandomPositionNearPath(maxDistance) {
 }
 
 function placeInitialTowers() {
-  /* 
-    타워를 초기에 배치하는 함수입니다.
-    무언가 빠진 코드가 있는 것 같지 않나요? 
-  */
-
   for (let i = 0; i < numOfInitialTowers; i++) {
     const { x, y } = getRandomPositionNearPath(200);
     const tower = new Tower(x, y, towerCost);
     towers.push(tower);
+    sendEvent(15, {tower});   // 초기타워 서버에 등록
     tower.draw(ctx, towerImage);
   }
 
-  // 초기타워 서버에 갱신
-  
 }
 
 function placeNewTower() {
@@ -169,9 +163,8 @@ function placeNewTower() {
     const { x, y } = getRandomPositionNearPath(200);
     const tower = new Tower(x, y);
     towers.push(tower);
+    sendEvent(15, {tower});   // 초기타워 서버에 등록
     tower.draw(ctx, towerImage);
-
-    // 서버에 새 타워를 등록하는 과정 필요!
   }
 }
 
@@ -211,7 +204,7 @@ canvas.addEventListener('click', (event) => {
     const deltaY = Math.abs(towerCenterY - clickY);
 
     if (deltaX <= towerRangeX && deltaY <= towerRangeY && isRefund) {
-      sendEvent(17, { towerId: tower.towerId, towerpos: { x: tower.x, y: tower.y } });
+      sendEvent(17, { towerIndex: i });
       towers.splice(i, 1);
     } else if (deltaX <= towerRangeX && deltaY <= towerRangeY && isUpgrade) {
       if (userGold < upgradeCost) {
