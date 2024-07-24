@@ -19,13 +19,7 @@ export const saveTowerInfoHandler = (uuid, payload) => {
     // towerLevel: payload.towerLevel,
   };
   towers.push(towerData);
-  console.log(
-    `SERVER측 타워 정보 저장 - uuid: ${towerData.uuid}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
-  );
-  return {
-    status: 'success',
-    message: `SERVER측 타워 정보 저장 - uuid: ${towerData.uuid}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
-  };
+  console.log(`SERVER측 타워 정보 저장 : ${towerData}`);
 };
 
 // import { getUsers } from '../../models/user.model.js';
