@@ -4,6 +4,7 @@ import { clearMonsters } from '../models/monster.model.js';
 import { clearScore } from '../models/score.model.js';
 import handlerMappings from './handlerMapping.js';
 import { getGameAssets } from '../init/assets.js';
+import { getHighScore } from '../db/user/user.db.js';
 
 export const handleDisconnect = (socket, userId) => {
   removeUser(socket.id); // 사용자 삭제
@@ -18,10 +19,11 @@ export const handleConnection = (socket, userId) => {
   console.log(`New user connected: ${userId} with socket ID ${socket.id}`);
   console.log('Current users:', getUsers());
 
+  const [highScore] = await getHighScore();
   const initdata = getGameAssets().initData.data;
   setGold(initdata.userGold);
 
-  socket.emit('connection', { userId: userId, initdata });
+  socket.emit('connection', { uuid: userUUID, initdata, highScore: highScore.high_score });
 };
 
 export const handleEvent = (io, socket, userId, data) => {

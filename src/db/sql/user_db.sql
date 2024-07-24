@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS user (
 
 CREATE TABLE IF NOT EXISTS scores (
   rank_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  high_score INT NOT NULL,
+  high_score INT DEFAULT 0,
   user_id INT NOT NULL,
   FOREIGN KEY (user_id) REFERENCES user(user_id)
 );
