@@ -17,7 +17,9 @@ export const saveTowerInfoHandler = (uuid, payload) => {
     towerY: payload.y,
     // towerLevel: payload.towerLevel,
   };
+  console.log('server recv:',towerData);
   addTower(towerData);
+  console.log('server TowerList:', getTowers());
 
   console.log(
     `SERVER측 타워 정보 저장 - uuid: ${towerData.uuid}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
@@ -30,7 +32,7 @@ export const saveTowerInfoHandler = (uuid, payload) => {
 
 export const upgradeTower = (uuid, payload) => {
   const towers = getTowers();
-  //console.log('towers:',towers);
+  console.log('towers:',towers);
   const { towerIndex } = payload;
   //console.log('towerIndex:',towerIndex);
 
@@ -43,6 +45,7 @@ export const upgradeTower = (uuid, payload) => {
     return { status: 'fail', message: '유저 정보가 다릅니다.' };
   }
 
+  console.log('towers[towerIndex]:', towers[towerIndex]);
   if (!towers[towerIndex]) {
     return { status: 'fail', message: '서버에 존재하지 않는 대상입니다.' };
   }
