@@ -1,6 +1,16 @@
 import { getUsers, getGold, setGold } from '../../models/user.model.js';
 import { towerCost, upgradeCost, addTower, removeTower, getTowers } from '../../models/tower.model.js';
 
+// 타워 정보 저장
+//export const saveTowerInfoHandler = (uuid, payload) => {
+  // userId 검증
+  // const userId = getUsers();
+  // userId.forEach(element => {
+  //     if ( uuid !== element ) {
+  //         console.log(`해당하는 userid와 일치하지 않습니다.`);
+  //     }
+  // })
+
 export const createTower = (uuid, payload) => {
   console.log('payload:',payload);
   const { tower } = payload;
@@ -9,20 +19,46 @@ export const createTower = (uuid, payload) => {
 
   const userId = getUsers();
   const towers = getTowers();
-
-  if (userId[0].uuid !== uuid) {
-    return { status: 'fail', message: '유저 정보가 다릅니다.' };
-  }
-
-  if (towers[towers.length-1] !== tower) {
-    return { status: 'fail', message: '서버와 타워 데이터가 다릅니다.' };
-  }
-
+  const towerData = {
+    uuid,
+    towerX: payload.x,
+    towerY: payload.y,
+    // towerLevel: payload.towerLevel,
+  };
+  towers.push(towerData);
+  console.log(
+    `SERVER측 타워 정보 저장 - uuid: ${towerData.uuid}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
+  );
   return {
     status: 'success',
-    message: '타워가 생성되었습니다.',
+    message: `SERVER측 타워 정보 저장 - uuid: ${towerData.uuid}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
   };
 };
+
+// 이전 코드
+// import { getUsers } from '../../models/user.model.js';
+// import { addTower, removeTower, getTowers, updateTower } from '../../models/tower.model.js';
+
+// export const createTower = (uuid, payload) => {
+//   const tower = payload.towers[payload.towers.length - 1];
+//   addTower(tower);
+
+//   const userId = getUsers();
+//   const towers = getTowers();
+
+//   if (userId[0].uuid !== uuid) {
+//     return { status: 'fail', message: '유저 정보가 다릅니다.' };
+//   }
+
+//   if (towers.length !== payload.towers.length) {
+//     return { status: 'fail', message: '서버와 타워 데이터가 다릅니다.' };
+//   }
+
+//   return {
+//     status: 'success',
+//     message: '타워가 생성되었습니다.',
+//   };
+// };
 
 export const upgradeTower = (uuid, payload) => {
   const towers = getTowers();

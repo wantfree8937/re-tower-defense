@@ -3,9 +3,19 @@ import { Monster } from './monster.js';
 import { Tower } from './tower.js';
 import { CLIENT_VERSION } from './Constants.js';
 
-/* 
-  어딘가에 엑세스 토큰이 저장이 안되어 있다면 로그인을 유도하는 코드를 여기에 추가해주세요!
-*/
+function getCookieValue(name) {
+  const regex = new RegExp(`(^| )${name}=([^;]+)`);
+  const match = document.cookie.match(regex);
+  if (match) {
+    return match[2];
+  }
+}
+const token = getCookieValue('authorization');
+
+//토큰이 없으면 로그인!
+if (!token) {
+  window.location.href = 'login.html';
+}
 
 let serverSocket; // 서버 웹소켓 객체
 const canvas = document.getElementById('gameCanvas');
@@ -151,6 +161,14 @@ function placeInitialTowers() {
     towers.push(tower);
     sendEvent(15, {tower});   // 초기타워 서버에 등록
     tower.draw(ctx, towerImage);
+
+    const towerInfo = {
+      x,
+      y,
+      // towerLevel: tower.Level,
+    };
+    sendEvent(21, { x, y });
+    console.log(`CLIENT측 초기 타워 생성 정보 : ${towerInfo.x}, ${towerInfo.y}`);
   }
 
 }
@@ -165,6 +183,15 @@ function placeNewTower() {
     towers.push(tower);
     sendEvent(15, {tower});   // 초기타워 서버에 등록
     tower.draw(ctx, towerImage);
+
+    // 서버에 새 타워를 등록하는 과정 필요!
+    const towerInfo = {
+      x,
+      y,
+      // towerLevel: tower.Level,
+    };
+    sendEvent(21, { x, y });
+    console.log(`CLIENT측 추가 타워 생성 정보 : ${towerInfo.x}, ${towerInfo.y}`);
   }
 }
 
@@ -334,6 +361,7 @@ Promise.all([
   serverSocket = io('http://localhost:3000', {
     query: {
       clientVersion: CLIENT_VERSION,
+      token: getCookieValue('authorization'),
     },
     auth: {
       token: localStorage.getItem('token'), // 토큰이 저장된 어딘가에서 가져와야 합니다!

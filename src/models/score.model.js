@@ -4,8 +4,8 @@ export const getScore = () => {
   return score;
 };
 
-export const addScore = (num) => {
-  return score += num;
+export const setScore = (num) => {
+  score = num;
 };
 
 export const clearScore = () => {

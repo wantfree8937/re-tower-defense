@@ -20,8 +20,8 @@ export const getGold = () => {
   return gold;
 };
 
-export const setGold = (updated) => {
-  gold = updated;
+export const setGold = (num) => {
+  gold = num;
 };
 
 export const clearGold = () => {
