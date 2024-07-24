@@ -15,7 +15,7 @@ export const handleDisconnect = (socket, userId) => {
   console.log('Current users:', getUsers());
 };
 
-export const handleConnection = (socket, userId) => {
+export const handleConnection = async (socket, userId) => {
   console.log(`New user connected: ${userId} with socket ID ${socket.id}`);
   console.log('Current users:', getUsers());
 
