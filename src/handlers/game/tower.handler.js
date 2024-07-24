@@ -18,32 +18,10 @@ export const saveTowerInfoHandler = (uuid, payload) => {
     // towerLevel: payload.towerLevel,
   };
   addTower(towerData);
-  
+
   console.log(
     `SERVER측 타워 정보 저장 - uuid: ${towerData.uuid}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
   );
-  return {
-    status: 'success',
-    message: `SERVER측 타워 정보 저장 - uuid: ${towerData.uuid}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
-  };
-};
-
-export const createTower = (uuid, payload) => {
-  console.log('payload:',payload);
-  const { tower } = payload;
-  addTower(tower);
-
-  const userId = getUsers();
-  const towers = getTowers();
-
-  if (userId[0].uuid !== uuid) {
-    return { status: 'fail', message: '유저 정보가 다릅니다.' };
-  }
-
-  if (towers.length !== payload.towers.length) {
-    return { status: 'fail', message: '서버와 타워 데이터가 다릅니다.' };
-  }
-
   return {
     status: 'success',
     message: `SERVER측 타워 정보 저장 - uuid: ${towerData.uuid}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
