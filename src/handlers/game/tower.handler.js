@@ -1,6 +1,5 @@
 // import { getUsers } from "../models/user.model.js";
 import { getTowers } from '../../models/tower.model.js';
-import { getTowers } from '../../models/tower.model.js';
 
 // 타워 정보 저장
 export const saveTowerInfoHandler = (uuid, payload) => {
