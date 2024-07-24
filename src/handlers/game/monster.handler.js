@@ -2,15 +2,15 @@ import { getUsers, getGold, setGold } from '../../models/user.model.js';
 import { addMonster, getMonsters, removeMonster } from '../../models/monster.model.js';
 import { setScore, getScore } from '../../models/score.model.js';
 
-export const monsterCreateHandler = (uuid, payload) => {
+export const monsterCreateHandler = (userId, payload) => {
   const monster = payload.monsters[payload.monsters.length - 1];
   addMonster(monster);
 
   const monsters = getMonsters();
 
-  const userId = getUsers();
+  const user = getUsers();
 
-  if (userId[0].uuid !== uuid) {
+  if (user[0].userId !== userId) {
     return { status: 'fail', message: '유저 정보가 다릅니다.' };
   }
 
