@@ -12,7 +12,7 @@ const registerHandler = (io) => {
 
     const userUUID = uuidv4(); // UUID 생성
 
-    addUser({ username: userData.username, socketId: socket.id }); // 사용자 추가
+    addUser({ uuid: userUUID, socketId: socket.id }); // 사용자 추가
 
     handleConnection(socket, userUUID);
 
