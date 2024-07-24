@@ -37,6 +37,7 @@ const towers = [];
 let score = 0; // 게임 점수
 let highScore = 0; // 기존 최고 점수
 let isInitGame = false;
+let isGameOver = false;
 
 let isRefund = false; // 업그레이드 상태
 let isUpgrade = false; // 업그레이드 상태
@@ -267,6 +268,10 @@ function spawnMonster() {
 }
 
 function gameLoop() {
+  if (isGameOver) {
+    return;
+  }
+
   // 렌더링 시에는 항상 배경 이미지부터 그려야 합니다! 그래야 다른 이미지들이 배경 이미지 위에 그려져요!
   ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height); // 배경 이미지 다시 그리기
   drawPath(monsterPath); // 경로 다시 그리기
@@ -314,8 +319,13 @@ function gameLoop() {
       if (isDestroyed) {
         base.draw(ctx, baseImage);
         /* 게임 오버 */
-        alert('게임 오버. 스파르타 본부를 지키지 못했다...ㅠㅠ');
-        location.reload();
+        isGameOver = true;
+        sendEvent(3, { score, highScore });
+
+        setTimeout(() => {
+          alert(`게임 오버. 서버 내 최고 점수: ${highScore}`);
+          location.reload();
+        }, 500);
       }
       monster.draw(ctx);
     } else {
@@ -338,6 +348,7 @@ function dataSync(data) {
   baseHp = data.baseHp !== undefined ? data.baseHp : baseHp;
   monsterLevel = data.monsterLevel !== undefined ? data.monsterLevel : monsterLevel;
   score = data.score !== undefined ? data.score : score;
+  highScore = data.highScore !== undefined ? data.highScore : highScore;
 }
 
 function initGame() {
@@ -375,7 +386,7 @@ Promise.all([
   });
 
   let userId = null;
-  serverSocket.on('response', (data) => {
+  serverSocket.on('response', async (data) => {
     console.log(data);
     if (data.syncData) {
       // response에 syncData가 포함되어 있으면 데이터 동기화 함수 실행
@@ -392,6 +403,7 @@ Promise.all([
     numOfInitialTowers = data.initdata.numOfInitialTowers;
     monsterLevel = data.initdata.monsterLevel;
     monsterSpawnInterval = data.initdata.monsterSpawnInterval;
+    highScore = data.highScore;
     if (!isInitGame) {
       initGame();
     }
