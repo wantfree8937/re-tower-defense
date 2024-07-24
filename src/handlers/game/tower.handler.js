@@ -1,8 +1,16 @@
 // import { getUsers } from "../models/user.model.js";
 import { getTowers } from '../../models/tower.model.js';
+import { getTowers } from '../../models/tower.model.js';
 
 // 타워 정보 저장
 export const saveTowerInfoHandler = (uuid, payload) => {
+  // userId 검증
+  // const userId = getUsers();
+  // userId.forEach(element => {
+  //     if ( uuid !== element ) {
+  //         console.log(`해당하는 userid와 일치하지 않습니다.`);
+  //     }
+  // })
   // userId 검증
   // const userId = getUsers();
   // userId.forEach(element => {
@@ -19,7 +27,13 @@ export const saveTowerInfoHandler = (uuid, payload) => {
     // towerLevel: payload.towerLevel,
   };
   towers.push(towerData);
-  console.log(`SERVER측 타워 정보 저장 : ${towerData}`);
+  console.log(
+    `SERVER측 타워 정보 저장 - uuid: ${towerData.uuid}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
+  );
+  return {
+    status: 'success',
+    message: `SERVER측 타워 정보 저장 - uuid: ${towerData.uuid}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
+  };
 };
 
 // import { getUsers } from '../../models/user.model.js';
