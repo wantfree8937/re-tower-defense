@@ -165,6 +165,14 @@ function placeInitialTowers() {
     const tower = new Tower(x, y, towerCost);
     towers.push(tower);
     tower.draw(ctx, towerImage);
+
+    const towerInfo = {
+      x,
+      y,
+      // towerLevel: tower.Level,
+    }
+    sendEvent(21, towerInfo);
+    console.log(`CLIENT측 초기 타워 생성 정보 : ${towerInfo}`);
   }
 }
 
@@ -179,6 +187,13 @@ function placeNewTower() {
     tower.draw(ctx, towerImage);
 
     // 서버에 새 타워를 등록하는 과정 필요!
+    const towerInfo = {
+      x,
+      y,
+      // towerLevel: tower.Level,
+    }
+    sendEvent(21, towerInfo);
+    console.log(`CLIENT측 추가 타워 생성 정보 : ${towerInfo}`);
   }
 }
 
