@@ -4,6 +4,7 @@ import { clearMonsters } from '../models/monster.model.js';
 import { clearScore } from '../models/score.model.js';
 import handlerMappings from './handlerMapping.js';
 import { getGameAssets } from '../init/assets.js';
+import { setBaseHp } from '../models/base.model.js';
 
 export const handleDisconnect = (socket, userId) => {
   removeUser(socket.id); // 사용자 삭제
@@ -20,7 +21,7 @@ export const handleConnection = (socket, userId) => {
 
   const initdata = getGameAssets().initData.data;
   setGold(initdata.userGold);
-
+  setBaseHp(initdata.baseHp);
   socket.emit('connection', { userId: userId, initdata });
 };
 
