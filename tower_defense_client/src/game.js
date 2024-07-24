@@ -167,9 +167,7 @@ function placeInitialTowers() {
       // towerLevel: tower.Level,
     };
     sendEvent(21, { x, y });
-    console.log(`초기 타워 생성 정보 : ${towerInfo.x}, ${towerInfo.y}`);
   }
-
 }
 
 function placeNewTower() {
@@ -189,14 +187,13 @@ function placeNewTower() {
       // towerLevel: tower.Level,
     };
     sendEvent(21, { x, y });
-    console.log(`CLIENT측 추가 타워 생성 정보 : ${towerInfo.x}, ${towerInfo.y}`);
   }
 }
 
 // 타워 판매
 function refundTower() {
   if (!isRefund) {
-    if(isUpgrade) {
+    if (isUpgrade) {
       isUpgrade = false;
     }
     isRefund = true;
@@ -208,7 +205,7 @@ function refundTower() {
 // 타워 업그레이드
 function upgradeTower() {
   if (!isUpgrade) {
-    if(isRefund) {
+    if (isRefund) {
       isRefund = false;
     }
     isUpgrade = true;
@@ -235,7 +232,7 @@ canvas.addEventListener('click', (event) => {
     const deltaY = Math.abs(towerCenterY - clickY);
 
     if (deltaX <= towerRangeX && deltaY <= towerRangeY && isRefund) {
-      userGold += (towerCost / 2);
+      userGold += towerCost / 2;
       sendEvent(17, { towerIndex: i });
       towers.splice(i, 1);
     } else if (deltaX <= towerRangeX && deltaY <= towerRangeY && isUpgrade) {
