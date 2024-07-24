@@ -15,7 +15,7 @@ router.post('/sign-up', async (req, res) => {
 
     // 기존 유저 확인
     const existUser = await getUser(username); // 비동기 함수 호출
-
+ 
     if (existUser) {
       return res.status(400).json({ message: '이미 존재하는 아이디입니다.' });
     }
@@ -49,7 +49,7 @@ router.post('/sign-in', async (req, res) => {
   try {
     const { username, password } = req.body;
     const user = await getUser(username); // 비동기 함수 호출
-
+    
     if (!user) {
       return res.status(401).json({ message: '입력하신 아이디를 찾을 수 없습니다.' });
     }
