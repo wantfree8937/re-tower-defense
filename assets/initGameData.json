@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "data": {
     "userGold": 2000,
-    "baseHp": 10,
+    "baseHp": 100,
     "towerCost": 500,
     "numOfInitialTowers": 0,
     "monsterLevel": 0,

@@ -3,9 +3,19 @@ import { Monster } from './monster.js';
 import { Tower } from './tower.js';
 import { CLIENT_VERSION } from './Constants.js';
 
-/* 
-  어딘가에 엑세스 토큰이 저장이 안되어 있다면 로그인을 유도하는 코드를 여기에 추가해주세요!
-*/
+function getCookieValue(name) {
+  const regex = new RegExp(`(^| )${name}=([^;]+)`);
+  const match = document.cookie.match(regex);
+  if (match) {
+    return match[2];
+  }
+}
+const token = getCookieValue('authorization');
+
+//토큰이 없으면 로그인!
+if (!token) {
+  window.location.href = 'login.html';
+}
 
 let serverSocket; // 서버 웹소켓 객체
 const canvas = document.getElementById('gameCanvas');
@@ -13,18 +23,18 @@ const ctx = canvas.getContext('2d');
 
 const NUM_OF_MONSTERS = 5; // 몬스터 개수
 
-let userGold = 3000; // 유저 골드
+let userGold = 0; // 유저 골드
 let base; // 기지 객체
-let baseHp = 100; // 기지 체력
+let baseHp = 0; // 기지 체력
 
-let towerCost = 500; // 타워 구입 비용
-let numOfInitialTowers = 3; // 초기 타워 개수
+let towerCost = 0; // 타워 구입 비용
+let numOfInitialTowers = 0; // 초기 타워 개수
 let monsterLevel = 0; // 몬스터 레벨
-let monsterSpawnInterval = 1200; // 몬스터 생성 주기
+let monsterSpawnInterval = 0; // 몬스터 생성 주기
 const monsters = [];
 const towers = [];
 
-let score = 500; // 게임 점수
+let score = 0; // 게임 점수
 let highScore = 0; // 기존 최고 점수
 let isInitGame = false;
 let isGameOver = false;
@@ -146,17 +156,21 @@ function getRandomPositionNearPath(maxDistance) {
 }
 
 function placeInitialTowers() {
-  /* 
-    타워를 초기에 배치하는 함수입니다.
-    무언가 빠진 코드가 있는 것 같지 않나요? 
-  */
-
   for (let i = 0; i < numOfInitialTowers; i++) {
     const { x, y } = getRandomPositionNearPath(200);
     const tower = new Tower(x, y, towerCost);
     towers.push(tower);
     tower.draw(ctx, towerImage);
+
+    const towerInfo = {
+      x,
+      y,
+      // towerLevel: tower.Level,
+    };
+    sendEvent(21, { x, y });
+    console.log(`초기 타워 생성 정보 : ${towerInfo.x}, ${towerInfo.y}`);
   }
+
 }
 
 function placeNewTower() {
@@ -165,17 +179,27 @@ function placeNewTower() {
   } else {
     userGold -= towerCost;
     const { x, y } = getRandomPositionNearPath(200);
-    const tower = new Tower(x, y);
+    const tower = new Tower(x, y, towerCost);
     towers.push(tower);
     tower.draw(ctx, towerImage);
 
     // 서버에 새 타워를 등록하는 과정 필요!
+    const towerInfo = {
+      x,
+      y,
+      // towerLevel: tower.Level,
+    };
+    sendEvent(21, { x, y });
+    console.log(`CLIENT측 추가 타워 생성 정보 : ${towerInfo.x}, ${towerInfo.y}`);
   }
 }
 
 // 타워 판매
 function refundTower() {
   if (!isRefund) {
+    if(isUpgrade) {
+      isUpgrade = false;
+    }
     isRefund = true;
   } else {
     isRefund = false;
@@ -185,6 +209,9 @@ function refundTower() {
 // 타워 업그레이드
 function upgradeTower() {
   if (!isUpgrade) {
+    if(isRefund) {
+      isRefund = false;
+    }
     isUpgrade = true;
   } else {
     isUpgrade = false;
@@ -209,7 +236,8 @@ canvas.addEventListener('click', (event) => {
     const deltaY = Math.abs(towerCenterY - clickY);
 
     if (deltaX <= towerRangeX && deltaY <= towerRangeY && isRefund) {
-      sendEvent(17, { towerId: tower.towerId, towerpos: { x: tower.x, y: tower.y } });
+      userGold += (towerCost / 2);
+      sendEvent(17, { towerIndex: i });
       towers.splice(i, 1);
     } else if (deltaX <= towerRangeX && deltaY <= towerRangeY && isUpgrade) {
       if (userGold < upgradeCost) {
@@ -264,6 +292,10 @@ function gameLoop() {
   if (isUpgrade) {
     ctx.fillStyle = 'black';
     ctx.fillText(`타워 강화 모드 ON`, 800, 150);
+  }
+  if (isRefund) {
+    ctx.fillStyle = 'black';
+    ctx.fillText(`타워 판매 모드 ON`, 800, 150);
   }
 
   // 타워 그리기 및 몬스터 공격 처리
@@ -349,6 +381,7 @@ Promise.all([
   serverSocket = io('http://localhost:3000', {
     query: {
       clientVersion: CLIENT_VERSION,
+      token: getCookieValue('authorization'),
     },
     auth: {
       token: localStorage.getItem('token'), // 토큰이 저장된 어딘가에서 가져와야 합니다!
@@ -401,7 +434,7 @@ const buyTowerButton = document.createElement('button');
 buyTowerButton.textContent = '타워 구입';
 buyTowerButton.style.position = 'absolute';
 buyTowerButton.style.top = '10px';
-buyTowerButton.style.right = '180px';
+buyTowerButton.style.right = '300px';
 buyTowerButton.style.padding = '10px 20px';
 buyTowerButton.style.fontSize = '16px';
 buyTowerButton.style.cursor = 'pointer';
@@ -413,12 +446,24 @@ const upgradeTowerButton = document.createElement('button');
 upgradeTowerButton.textContent = '타워 업그레이드';
 upgradeTowerButton.style.position = 'absolute';
 upgradeTowerButton.style.top = '10px';
-upgradeTowerButton.style.right = '10px';
+upgradeTowerButton.style.right = '130px';
 upgradeTowerButton.style.padding = '10px 20px';
 upgradeTowerButton.style.fontSize = '16px';
 upgradeTowerButton.style.cursor = 'pointer';
 
 upgradeTowerButton.addEventListener('click', upgradeTower);
 document.body.appendChild(upgradeTowerButton);
+
+const refundTowerButton = document.createElement('button');
+refundTowerButton.textContent = '타워 판매';
+refundTowerButton.style.position = 'absolute';
+refundTowerButton.style.top = '10px';
+refundTowerButton.style.right = '10px';
+refundTowerButton.style.padding = '10px 20px';
+refundTowerButton.style.fontSize = '16px';
+refundTowerButton.style.cursor = 'pointer';
+
+refundTowerButton.addEventListener('click', refundTower);
+document.body.appendChild(refundTowerButton);
 
 export { sendEvent };
