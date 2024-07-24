@@ -172,7 +172,7 @@ function placeInitialTowers() {
       // towerLevel: tower.Level,
     };
     sendEvent(21, { x, y });
-    console.log(`CLIENT측 초기 타워 생성 정보 : ${towerInfo}`);
+    console.log(`CLIENT측 초기 타워 생성 정보 : ${towerInfo.x}, ${towerInfo.y}`);
   }
 }
 
@@ -193,7 +193,7 @@ function placeNewTower() {
       // towerLevel: tower.Level,
     };
     sendEvent(21, { x, y });
-    console.log(`CLIENT측 추가 타워 생성 정보 : ${towerInfo}`);
+    console.log(`CLIENT측 추가 타워 생성 정보 : ${towerInfo.x}, ${towerInfo.y}`);
   }
 }
 

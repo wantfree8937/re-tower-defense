@@ -1,6 +1,5 @@
 // import { getUsers } from "../models/user.model.js";
 import { getTowers } from '../../models/tower.model.js';
-import { getTowers } from '../../models/tower.model.js';
 
 // 타워 정보 저장
 export const saveTowerInfoHandler = (uuid, payload) => {
@@ -27,23 +26,9 @@ export const saveTowerInfoHandler = (uuid, payload) => {
     status: 'success',
     message: `SERVER측 타워 정보 저장 - uuid: ${towerData.uuid}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
   };
-  const towers = getTowers();
-  const towerData = {
-    uuid,
-    towerX: payload.x,
-    towerY: payload.y,
-    // towerLevel: payload.towerLevel,
-  };
-  towers.push(towerData);
-  console.log(
-    `SERVER측 타워 정보 저장 - uuid: ${towerData.uuid}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
-  );
-  return {
-    status: 'success',
-    message: `SERVER측 타워 정보 저장 - uuid: ${towerData.uuid}, towerX: ${towerData.towerX}, towerY: ${towerData.towerY}`,
-  };
 };
 
+// 이전 코드
 // import { getUsers } from '../../models/user.model.js';
 // import { addTower, removeTower, getTowers, updateTower } from '../../models/tower.model.js';
 
