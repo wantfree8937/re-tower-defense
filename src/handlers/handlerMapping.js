@@ -7,7 +7,6 @@ const handlerMappings = {
   3: gameEnd,
   11: monsterCreateHandler,
   12: monsterKillHandler,
-  // 15: createTower,
   16: upgradeTower,
   21: saveTowerInfoHandler,
 };
