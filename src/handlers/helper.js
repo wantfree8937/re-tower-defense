@@ -6,7 +6,7 @@ import handlerMappings from './handlerMapping.js';
 import { getGameAssets } from '../init/assets.js';
 import { getHighScore } from '../db/user/user.db.js';
 
-export const handleDisconnect = (socket, uuid) => {
+export const handleDisconnect = (socket, userId) => {
   removeUser(socket.id); // 사용자 삭제
   clearMonsters();
   clearScore();
@@ -15,8 +15,8 @@ export const handleDisconnect = (socket, uuid) => {
   console.log('Current users:', getUsers());
 };
 
-export const handleConnection = async (socket, userUUID) => {
-  console.log(`New user connected: ${userUUID} with socket ID ${socket.id}`);
+export const handleConnection = (socket, userId) => {
+  console.log(`New user connected: ${userId} with socket ID ${socket.id}`);
   console.log('Current users:', getUsers());
 
   const [highScore] = await getHighScore();
@@ -26,7 +26,7 @@ export const handleConnection = async (socket, userUUID) => {
   socket.emit('connection', { uuid: userUUID, initdata, highScore: highScore.high_score });
 };
 
-export const handleEvent = (io, socket, userUUID, data) => {
+export const handleEvent = (io, socket, userId, data) => {
   if (!CLIENT_VERSION.includes(data.clientVersion)) {
     socket.emit('response', { status: 'fail', message: 'Client version mismatch' });
     return;
@@ -39,7 +39,7 @@ export const handleEvent = (io, socket, userUUID, data) => {
   }
 
   // 적절한 핸들러에 userID 와 payload를 전달하고 결과를 받습니다.
-  const response = handler(userUUID, data.payload);
+  const response = handler(userId, data.payload);
   // 만약 결과에 broadcast (모든 유저에게 전달)이 있다면 broadcast 합니다.
   // if (response.broadcast) {
   //   io.emit('response', 'broadcast');

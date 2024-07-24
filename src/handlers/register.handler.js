@@ -10,16 +10,16 @@ const registerHandler = (io) => {
 
     const userData = await authMiddleware(token);
 
-    const userUUID = uuidv4(); // UUID 생성
+    const userId = userData.userId;
 
-    addUser({ uuid: userUUID, socketId: socket.id }); // 사용자 추가
+    addUser({ userId: userId, socketId: socket.id }); // 사용자 추가
 
-    handleConnection(socket, userUUID);
+    handleConnection(socket, userId);
 
     // 모든 서비스 이벤트 처리
-    socket.on('event', (data) => handleEvent(io, socket, userUUID, data));
+    socket.on('event', (data) => handleEvent(io, socket, userId, data));
     // 접속 해제시 이벤트 처리
-    socket.on('disconnect', () => handleDisconnect(socket, userUUID));
+    socket.on('disconnect', () => handleDisconnect(socket, userId));
   });
 };
 
