@@ -1,5 +1,5 @@
 import { getUsers, getGold, setGold } from '../../models/user.model.js';
-import { addMonster, getMonsters, removeMonster } from '../../models/monster.model.js';
+import { addMonster, getMonsters, removeMonster, getMonster } from '../../models/monster.model.js';
 import { setScore, getScore } from '../../models/score.model.js';
 import { getBaseHp, setBaseHp } from '../../models/base.model.js';
 
@@ -26,6 +26,7 @@ export const monsterCreateHandler = (userId, payload) => {
 };
 
 export const monsterKillHandler = (userId, payload) => {
+  const deathMonster = getMonster(payload.index);
   removeMonster(payload.index);
 
   const monsters = getMonsters();
@@ -45,8 +46,14 @@ export const monsterKillHandler = (userId, payload) => {
     return { status: 'fail', message: '서버의 점수와 다릅니다.' };
   }
 
-  score += 100; // 몬스터 처치 시 스코어 100씩 증가
-  setScore(score);
+  console.log(`몬스터 타입은 : ${deathMonster.monsterType}`);
+  if (deathMonster.monsterType === 1) {
+    score += 100; // 몬스터 처치 시 스코어 100씩 증가
+    setScore(score);
+  } else {
+    gold += 500; // 황금 고블린 처치 시 스코어 1000씩 증가
+    setGold(gold);
+  }
 
   if (score % 1000 === 0) {
     gold += 500; // 스코어가 1000 단위가 될 때마다 500골드 추가

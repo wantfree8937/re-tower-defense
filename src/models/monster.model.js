@@ -15,3 +15,7 @@ export const clearMonsters = () => {
 export const getMonsters = () => {
   return monsters;
 };
+
+export const getMonster = (index) => {
+  return monsters[index];
+};
