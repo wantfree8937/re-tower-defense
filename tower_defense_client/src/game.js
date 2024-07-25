@@ -248,7 +248,6 @@ function placeBase() {
 function spawnMonster() {
   monsters.push(new Monster(monsterPath, monsterImages, monsterLevel));
   sendEvent(11, {
-    monsterLevel,
     monsters,
   });
 }
