@@ -1,4 +1,5 @@
 const monsters = [];
+let monsterLevel = 0;
 
 export const addMonster = (monster) => {
   monsters.push(monster);
@@ -18,4 +19,12 @@ export const getMonsters = () => {
 
 export const getMonster = (index) => {
   return monsters[index];
+};
+
+export const setMonsterLevel = (level) => {
+  monsterLevel = level;
+};
+
+export const getMonsterLevel = () => {
+  return monsterLevel;
 };

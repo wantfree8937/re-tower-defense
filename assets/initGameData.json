@@ -5,7 +5,7 @@
     "userGold": 2000,
     "baseHp": 100,
     "towerCost": 500,
-    "numOfInitialTowers": 0,
+    "numOfInitialTowers": 3,
     "monsterLevel": 0,
     "monsterSpawnInterval": 2000,
     "goldenMonsterSpawnInterval": 5000
