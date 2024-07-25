@@ -28,6 +28,5 @@ export const getHighScore = async () => {
 };
 
 export const updateHighScore = async (highScore, userId) => {
-  await pools.USER_DB.query(SQL_QUERIES.UPDATE_USER_SCORE, [highScore, highScore, userId]);
-  return { highScore, userId };
+  await pools.USER_DB.query(SQL_QUERIES.UPDATE_USER_SCORE, [highScore, userId, highScore]);
 };

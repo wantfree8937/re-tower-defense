@@ -6,5 +6,5 @@ export const SQL_QUERIES = {
 
   GET_HIGHSCORE: 'SELECT * FROM scores',
   UPDATE_USER_SCORE:
-    'UPDATE scores SET high_score = GREATEST(high_score, ?),user_id = CASE WHEN high_score < ? THEN ? ELSE user_id END WHERE rank_id = 1',
+    'UPDATE scores SET user_id = CASE WHEN high_score < ? THEN ? ELSE user_id END, high_score = GREATEST(high_score, ?) WHERE rank_id = 1',
 };
