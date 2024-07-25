@@ -102,3 +102,7 @@
 11. **상태 동기화**
 
 - 클라이언트에서 리스폰스 데이터를 받을 때 마다, userGold, baseHp, monsterLevel, score, highscore 정보 업데이트합니다.
+
+## **ERD Diagram**
+
+![image](https://github.com/user-attachments/assets/797d5345-f89d-40e7-b867-e1dcc93224af)
