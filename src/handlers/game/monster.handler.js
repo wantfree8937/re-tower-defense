@@ -37,7 +37,8 @@ export const monsterKillHandler = (userId, payload) => {
   if (user[0].userId !== userId) {
     return { status: 'fail', message: '유저 정보가 다릅니다.' };
   }
-  if (monsters.length !== payload.monsters.length) {
+  if (
+    monsters.length !== payload.monsters.length) {
     return { status: 'fail', message: '서버와 몬스터 데이터가 다릅니다.' };
   }
 
