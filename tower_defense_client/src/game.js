@@ -240,8 +240,8 @@ canvas.addEventListener('click', (event) => {
     } else {
       const towerWidth = 78;
       const towerHeight = 150;
-      const x = clickX - (towerWidth/2);
-      const y = clickY - (towerHeight/2);
+      const x = clickX - (towerWidth / 2);
+      const y = clickY - (towerHeight / 2);
       placeNewTower({ x, y });
     }
     isBuy = false;
@@ -256,8 +256,8 @@ canvas.addEventListener('click', (event) => {
       const deltaY = Math.abs(towerCenterY - clickY);
 
       if (deltaX <= towerRangeX && deltaY <= towerRangeY && isRefund) {
-        userGold += towerCost / 2;
-        sendEvent(17, { towerIndex: i });
+        userGold += towerCost * (1 + towers[i].upgraded) / 2;
+        sendEvent(17, { towerIndex: i, upgradeCount: towers[i].upgraded });
         towers.splice(i, 1);
       } else if (deltaX <= towerRangeX && deltaY <= towerRangeY && isUpgrade) {
         if (userGold < upgradeCost) {
@@ -275,7 +275,6 @@ canvas.addEventListener('click', (event) => {
       }
     }
   }
-
 });
 
 function placeBase() {
