@@ -41,7 +41,8 @@ let highScore = 0; // 기존 최고 점수
 let isInitGame = false;
 let isGameOver = false;
 
-let isRefund = false; // 업그레이드 상태
+let isBuy = false;  // 구매 상태
+let isRefund = false; // 판매 상태
 let isUpgrade = false; // 업그레이드 상태
 const upgradeCost = 500; // 업그레이드 비용
 
@@ -171,17 +172,18 @@ function placeInitialTowers() {
     const { x, y } = getRandomPositionNearPath(200);
     const tower = new Tower(x, y, towerCost);
     towers.push(tower);
+    console.log(tower);
     tower.draw(ctx, towerImage);
 
     sendEvent(21, { x, y, isInitial: true });
   }
 }
 
-function placeNewTower() {
+function placeNewTower(data) {
   if (userGold < towerCost) {
     console.log('골드가 부족합니다!');
   } else {
-    const { x, y } = getRandomPositionNearPath(200);
+    const { x, y } = data;
     const tower = new Tower(x, y, towerCost);
     towers.push(tower);
     tower.draw(ctx, towerImage);
@@ -191,11 +193,21 @@ function placeNewTower() {
 }
 
 // 타워 판매
+function buyTower() {
+  if (!isBuy) {
+    isRefund = false;
+    isUpgrade = false;
+    isBuy = true;
+  } else {
+    isBuy = false;
+  }
+}
+
+// 타워 판매
 function refundTower() {
   if (!isRefund) {
-    if (isUpgrade) {
-      isUpgrade = false;
-    }
+    isBuy = false;
+    isUpgrade = false;
     isRefund = true;
   } else {
     isRefund = false;
@@ -205,9 +217,8 @@ function refundTower() {
 // 타워 업그레이드
 function upgradeTower() {
   if (!isUpgrade) {
-    if (isRefund) {
-      isRefund = false;
-    }
+    isBuy = false;
+    isRefund = false;
     isUpgrade = true;
   } else {
     isUpgrade = false;
@@ -221,29 +232,42 @@ canvas.addEventListener('click', (event) => {
   const clickY = event.clientY - rect.top;
   const towerRangeX = 30;
   const towerRangeY = 30;
+  
+  if (isBuy) {
+    if (userGold < upgradeCost) {
+      console.log('골드가 부족합니다!');
+    } else {
+      const towerWidth = 78;
+      const towerHeight = 150;
+      const x = clickX - (towerWidth / 2);
+      const y = clickY - (towerHeight / 2);
+      placeNewTower({ x, y });
+    }
+    isBuy = false;
+  } else {
+    for (let i = 0; i < towers.length; i++) {
+      const tower = towers[i];
 
-  for (let i = 0; i < towers.length; i++) {
-    const tower = towers[i];
+      const towerCenterX = tower.x + tower.width / 2;
+      const towerCenterY = tower.y + tower.height / 2;
 
-    const towerCenterX = tower.x + tower.width / 2;
-    const towerCenterY = tower.y + tower.height / 2;
+      const deltaX = Math.abs(towerCenterX - clickX);
+      const deltaY = Math.abs(towerCenterY - clickY);
 
-    const deltaX = Math.abs(towerCenterX - clickX);
-    const deltaY = Math.abs(towerCenterY - clickY);
-
-    if (deltaX <= towerRangeX && deltaY <= towerRangeY && isRefund) {
-      sendEvent(17, { towerIndex: i, upgradeCount: towers[i].upgraded });
-      towers.splice(i, 1);
-    } else if (deltaX <= towerRangeX && deltaY <= towerRangeY && isUpgrade) {
-      if (userGold < upgradeCost) {
-        console.log('골드가 부족합니다!');
-      } else {
-        const res = towers[i].upgrade(userGold); // 업그레이드 가능여부 확인 후 강화
-        if (res) {
-          sendEvent(16, { towerIndex: i });
-        } // 업그레이드 비용만큼 골드 감소
-        else {
-          console.log('업그레이드 실패');
+      if (deltaX <= towerRangeX && deltaY <= towerRangeY && isRefund) {
+        sendEvent(17, { towerIndex: i, upgradeCount: towers[i].upgraded });
+        towers.splice(i, 1);
+      } else if (deltaX <= towerRangeX && deltaY <= towerRangeY && isUpgrade) {
+        if (userGold < upgradeCost) {
+          console.log('골드가 부족합니다!');
+        } else {
+          const res = towers[i].upgrade(userGold); // 업그레이드 가능여부 확인 후 강화
+          if (res) {
+            sendEvent(16, { towerIndex: i });
+          } // 업그레이드 비용만큼 골드 감소
+          else {
+            console.log('업그레이드 실패');
+          }
         }
       }
     }
@@ -296,6 +320,10 @@ function gameLoop() {
   ctx.fillStyle = 'black';
   ctx.fillText(`현재 레벨: ${monsterLevel}`, 100, 200); // 최고 기록 표시
 
+  if (isBuy) {
+    ctx.fillStyle = 'black';
+    ctx.fillText(`타워생성 위치지정`, 800, 150);
+  }
   if (isUpgrade) {
     ctx.fillStyle = 'black';
     ctx.fillText(`타워 강화 모드 ON`, 800, 150);
@@ -448,7 +476,7 @@ buyTowerButton.style.padding = '10px 20px';
 buyTowerButton.style.fontSize = '16px';
 buyTowerButton.style.cursor = 'pointer';
 
-buyTowerButton.addEventListener('click', placeNewTower);
+buyTowerButton.addEventListener('click', buyTower);
 document.body.appendChild(buyTowerButton);
 
 const upgradeTowerButton = document.createElement('button');

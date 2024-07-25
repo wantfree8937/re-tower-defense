@@ -63,4 +63,8 @@ export class Tower {
       return true;
     }
   }
+
+  getSize() {
+    return { width: this.width, height: this.height };
+  }
 }

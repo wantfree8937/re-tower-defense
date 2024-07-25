@@ -33,17 +33,13 @@ export const monsterCreateHandler = (userId, payload) => {
 
 export const monsterKillHandler = (userId, payload) => {
   const deathMonster = getMonster(payload.index);
-
   const monsters = getMonsters();
 
   let gold = getGold();
-
   let score = getScore();
-  console.log(score);
   let monsterLevel = getMonsterLevel();
 
   const user = getUsers();
-
   if (user[0].userId !== userId) {
     return { status: 'fail', message: '유저 정보가 다릅니다.' };
   }
