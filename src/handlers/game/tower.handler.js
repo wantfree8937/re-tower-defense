@@ -67,8 +67,8 @@ export const upgradeTower = (userId, payload) => {
 
 export const refundTower = (userId, payload) => {
   const towers = getTowers();
-  const { towerIndex } = payload;
-
+  const { towerIndex, upgradeCount } = payload;
+  
   const user = getUsers();
 
   const goldNow = getGold();
@@ -83,7 +83,8 @@ export const refundTower = (userId, payload) => {
   }
 
   // 골드증가 반영
-  setGold(goldNow + Cost / 2);
+  setGold(goldNow + Cost * (1 + upgradeCount) / 2);
+  
   // 판매대상 타워삭제
   removeTower(towerIndex);
 
