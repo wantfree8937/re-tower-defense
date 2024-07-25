@@ -17,6 +17,10 @@ export const getMonsters = () => {
   return monsters;
 };
 
+export const getMonster = (index) => {
+  return monsters[index];
+};
+
 export const setMonsterLevel = (level) => {
   monsterLevel = level;
 };

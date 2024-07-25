@@ -1,5 +1,12 @@
 import { getUsers, getGold, setGold } from '../../models/user.model.js';
-import { addMonster, getMonsters, removeMonster, getMonsterLevel, setMonsterLevel } from '../../models/monster.model.js';
+import {
+  addMonster,
+  getMonsters,
+  removeMonster,
+  getMonsterLevel,
+  setMonsterLevel,
+  getMonster,
+} from '../../models/monster.model.js';
 import { setScore, getScore } from '../../models/score.model.js';
 import { getBaseHp, setBaseHp } from '../../models/base.model.js';
 
@@ -12,7 +19,7 @@ export const monsterCreateHandler = (userId, payload) => {
     return { status: 'fail', message: '유저 정보가 다릅니다.' };
   }
 
-  if (monsterLevel !== monster.level){
+  if (monsterLevel !== monster.level) {
     return { status: 'fail', message: '서버와 몬스터 레벨이 다릅니다.' };
   }
 
@@ -25,10 +32,16 @@ export const monsterCreateHandler = (userId, payload) => {
 };
 
 export const monsterKillHandler = (userId, payload) => {
+  const deathMonster = getMonster(payload.index);
+
   const monsters = getMonsters();
+
   let gold = getGold();
+
   let score = getScore();
+  console.log(score);
   let monsterLevel = getMonsterLevel();
+
   const user = getUsers();
 
   if (user[0].userId !== userId) {
@@ -44,8 +57,15 @@ export const monsterKillHandler = (userId, payload) => {
   }
 
   removeMonster(payload.index);
-  score += 100; // 몬스터 처치 시 스코어 100씩 증가
-  setScore(score);
+  console.log(`몬스터 타입은 : ${deathMonster.monsterType}`);
+
+  if (deathMonster.monsterType === 1) {
+    score += 100; // 몬스터 처치 시 스코어 100씩 증가
+    setScore(score);
+  } else if (deathMonster.monsterType === 2) {
+    gold += 500; // 황금 고블린 처치 시 스코어 1000씩 증가
+    setGold(gold);
+  }
 
   if (score % 1000 === 0) {
     gold += 500; // 스코어가 1000 단위가 될 때마다 500골드 추가
@@ -68,6 +88,7 @@ export const monsterKillHandler = (userId, payload) => {
     message: '몬스터를 처치했습니다.',
     syncData: {
       score,
+      userGold: gold,
     },
   };
 };

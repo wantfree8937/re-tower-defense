@@ -31,6 +31,8 @@ let towerCost = 0; // 타워 구입 비용
 let numOfInitialTowers = 0; // 초기 타워 개수
 let monsterLevel = 0; // 몬스터 레벨
 let monsterSpawnInterval = 0; // 몬스터 생성 주기
+let goldenMonsterSpawnInterval = 0; // 황금고블린 생성 주기
+let monsterType = 1; // 황금고블린과 일반 몬스터 구분을 위한 type 생성
 const monsters = [];
 const towers = [];
 
@@ -62,6 +64,15 @@ for (let i = 1; i <= NUM_OF_MONSTERS; i++) {
   img.src = `images/monster${i}.png`;
   monsterImages.push(img);
 }
+
+// 황금고블린 이미지 생성
+const goldenMonsterImages = [];
+const makeGoldenMonsterImages = () => {
+  const img = new Image();
+  img.src = `images/monster${6}.png`;
+  goldenMonsterImages.push(img);
+};
+makeGoldenMonsterImages();
 
 let monsterPath;
 
@@ -246,7 +257,21 @@ function placeBase() {
 }
 
 function spawnMonster() {
-  monsters.push(new Monster(monsterPath, monsterImages, monsterLevel));
+  const normalMonster = new Monster(monsterPath, monsterImages, monsterLevel, 1);
+  monsters.push(normalMonster);
+
+  sendEvent(11, {
+    monsterLevel,
+    monsters,
+  });
+}
+
+// 황금 고블린 생성 함수
+function spawnGoldenMonster() {
+  const goldenMonster = new Monster(monsterPath, goldenMonsterImages, monsterLevel, 2);
+  goldenMonster.speed = 10;
+
+  monsters.push(goldenMonster);
   sendEvent(11, {
     monsters,
   });
@@ -347,6 +372,7 @@ function initGame() {
   placeBase(); // 기지 배치
 
   setInterval(spawnMonster, monsterSpawnInterval); // 설정된 몬스터 생성 주기마다 몬스터 생성
+  setInterval(spawnGoldenMonster, goldenMonsterSpawnInterval); // 설정된 몬스터 생성 주기마다 몬스터 생성
   gameLoop(); // 게임 루프 최초 실행
   isInitGame = true;
 }
@@ -388,6 +414,7 @@ Promise.all([
     numOfInitialTowers = data.initdata.numOfInitialTowers;
     monsterLevel = data.initdata.monsterLevel;
     monsterSpawnInterval = data.initdata.monsterSpawnInterval;
+    goldenMonsterSpawnInterval = data.initdata.goldenMonsterSpawnInterval;
     highScore = data.highScore;
     if (!isInitGame) {
       initGame();
