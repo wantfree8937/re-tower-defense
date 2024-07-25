@@ -1,6 +1,7 @@
 import { getUsers, getGold, setGold } from '../../models/user.model.js';
 import { addMonster, getMonsters, removeMonster } from '../../models/monster.model.js';
 import { setScore, getScore } from '../../models/score.model.js';
+import { getBaseHp, setBaseHp } from '../../models/base.model.js';
 
 export const monsterCreateHandler = (userId, payload) => {
   const monster = payload.monsters[payload.monsters.length - 1];
@@ -31,6 +32,11 @@ export const monsterKillHandler = (userId, payload) => {
   let gold = getGold();
   let score = getScore();
 
+  const user = getUsers();
+
+  if (user[0].userId !== userId) {
+    return { status: 'fail', message: '유저 정보가 다릅니다.' };
+  }
   if (monsters.length !== payload.monsters.length) {
     return { status: 'fail', message: '서버와 몬스터 데이터가 다릅니다.' };
   }
@@ -65,5 +71,19 @@ export const monsterKillHandler = (userId, payload) => {
 };
 
 export const baseUnderAttack = (userId, payload) => {
-  payload.towerHp;
+  const user = getUsers();
+
+  if (user[0].userId !== userId) {
+    return { status: 'fail', message: '유저 정보가 다릅니다.' };
+  }
+
+  const baseHp = getBaseHp();
+  setBaseHp(baseHp);
+  return {
+    status: 'success',
+    message: '기지가 공격당함.',
+    syncData: {
+      baseHp,
+    },
+  };
 };

@@ -5,6 +5,7 @@ import { clearScore } from '../models/score.model.js';
 import handlerMappings from './handlerMapping.js';
 import { getGameAssets } from '../init/assets.js';
 import { getHighScore } from '../db/user/user.db.js';
+import { setBaseHp } from '../models/base.model.js';
 
 export const handleDisconnect = (socket, userId) => {
   removeUser(socket.id); // 사용자 삭제
@@ -21,9 +22,12 @@ export const handleConnection = async (socket, userId) => {
 
   const [highScore] = await getHighScore();
   const initdata = getGameAssets().initData.data;
+
   setGold(initdata.userGold);
 
-  socket.emit('connection', { uuid: userUUID, initdata, highScore: highScore.high_score });
+  setBaseHp(initdata.baseHp);
+
+  socket.emit('connection', { userId: userId, initdata, highScore: highScore.high_score });
 };
 
 export const handleEvent = (io, socket, userId, data) => {
