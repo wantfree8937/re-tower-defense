@@ -22,11 +22,12 @@ export const handleConnection = async (socket, userId) => {
 
   const [highScore] = await getHighScore();
   const initdata = getGameAssets().initData.data;
+
   setGold(initdata.userGold);
 
   setBaseHp(initdata.baseHp);
 
-  socket.emit('connection', { uuid: userUUID, initdata, highScore: highScore.high_score });
+  socket.emit('connection', { userId: userId, initdata, highScore: highScore.high_score });
 };
 
 export const handleEvent = (io, socket, userId, data) => {
