@@ -1,10 +1,11 @@
 export class Monster {
-  constructor(path, monsterImages, level) {
+  constructor(path, monsterImages, level, monsterTypeNumber) {
     // 생성자 안에서 몬스터의 속성을 정의한다고 생각하시면 됩니다!
     if (!path || path.length <= 0) {
       throw new Error('몬스터가 이동할 경로가 필요합니다.');
     }
 
+    this.monsterType = monsterTypeNumber; //``````````````````````````````
     this.monsterNumber = Math.floor(Math.random() * monsterImages.length); // 몬스터 번호 (1 ~ 5. 몬스터를 추가해도 숫자가 자동으로 매겨집니다!)
     this.path = path; // 몬스터가 이동할 경로
     this.currentIndex = 0; // 몬스터가 이동 중인 경로의 인덱스
