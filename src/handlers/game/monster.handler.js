@@ -33,12 +33,15 @@ export const monsterCreateHandler = (userId, payload) => {
 
 export const monsterKillHandler = (userId, payload) => {
   const deathMonster = getMonster(payload.index);
-  removeMonster(payload.index);
 
   const monsters = getMonsters();
+
   let gold = getGold();
+
   let score = getScore();
+  console.log(score);
   let monsterLevel = getMonsterLevel();
+
   const user = getUsers();
 
   if (user[0].userId !== userId) {
@@ -53,11 +56,13 @@ export const monsterKillHandler = (userId, payload) => {
     return { status: 'fail', message: '서버의 점수와 다릅니다.' };
   }
 
+  removeMonster(payload.index);
   console.log(`몬스터 타입은 : ${deathMonster.monsterType}`);
+
   if (deathMonster.monsterType === 1) {
     score += 100; // 몬스터 처치 시 스코어 100씩 증가
     setScore(score);
-  } else {
+  } else if (deathMonster.monsterType === 2) {
     gold += 500; // 황금 고블린 처치 시 스코어 1000씩 증가
     setGold(gold);
   }
@@ -83,6 +88,7 @@ export const monsterKillHandler = (userId, payload) => {
     message: '몬스터를 처치했습니다.',
     syncData: {
       score,
+      userGold: gold,
     },
   };
 };
