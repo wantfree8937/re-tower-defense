@@ -162,12 +162,7 @@ function placeInitialTowers() {
     towers.push(tower);
     tower.draw(ctx, towerImage);
 
-    const towerInfo = {
-      x,
-      y,
-      // towerLevel: tower.Level,
-    };
-    sendEvent(21, { x, y });
+    sendEvent(21, { x, y, isInitial: true });
   }
 }
 
@@ -175,18 +170,11 @@ function placeNewTower() {
   if (userGold < towerCost) {
     console.log('골드가 부족합니다!');
   } else {
-    userGold -= towerCost;
     const { x, y } = getRandomPositionNearPath(200);
     const tower = new Tower(x, y, towerCost);
     towers.push(tower);
     tower.draw(ctx, towerImage);
 
-    // 서버에 새 타워를 등록하는 과정 필요!
-    const towerInfo = {
-      x,
-      y,
-      // towerLevel: tower.Level,
-    };
     sendEvent(21, { x, y });
   }
 }
@@ -233,17 +221,15 @@ canvas.addEventListener('click', (event) => {
     const deltaY = Math.abs(towerCenterY - clickY);
 
     if (deltaX <= towerRangeX && deltaY <= towerRangeY && isRefund) {
-      userGold += towerCost * (1 + towers[i].upgraded) / 2;
       sendEvent(17, { towerIndex: i, upgradeCount: towers[i].upgraded });
       towers.splice(i, 1);
     } else if (deltaX <= towerRangeX && deltaY <= towerRangeY && isUpgrade) {
       if (userGold < upgradeCost) {
         console.log('골드가 부족합니다!');
       } else {
-        sendEvent(16, { towerIndex: i }); // 타워 존재 검증
         const res = towers[i].upgrade(userGold); // 업그레이드 가능여부 확인 후 강화
         if (res) {
-          userGold -= upgradeCost;
+          sendEvent(16, { towerIndex: i });
         } // 업그레이드 비용만큼 골드 감소
         else {
           console.log('업그레이드 실패');
