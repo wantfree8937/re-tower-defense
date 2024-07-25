@@ -232,7 +232,7 @@ canvas.addEventListener('click', (event) => {
   const clickY = event.clientY - rect.top;
   const towerRangeX = 30;
   const towerRangeY = 30;
-
+  
   if (isBuy) {
     if (userGold < upgradeCost) {
       console.log('골드가 부족합니다!');
